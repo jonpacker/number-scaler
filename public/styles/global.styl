@@ -1,0 +1,206 @@
+.nav
+  margin-top: 0
+  padding: 0
+  margin-bottom: 10px
+  height: 60px
+
+  a
+    margin: 0 0 0 5px
+    display: inline
+
+  img
+    vertical-align: top
+
+  .right
+    float: right
+    vertical-align: top
+
+  h1
+    vertical-align: top
+    position: relative
+    top: 3px
+    padding-left: 3px
+    display: inline
+
+  table
+    background-color: inherit
+
+    td
+      border: none
+      padding: 0
+
+body
+  font-family: 'Rubik', sans-serif
+  margin: auto
+  padding: 10px
+  line-height: 1.4em
+  font-size: 16px
+
+fieldset
+  padding: 10px
+  border-collapse: separate
+  border-spacing: 0
+  background-color: #efede8
+  margin-bottom: 10px
+  border-width: 0
+  overflow: visible
+  border-radius: 7px
+
+.answer-set
+  padding: 10px
+  border-radius: 7px
+  background-color: #efede8
+  margin-bottom: 10px
+  display: grid
+  grid-template-columns: 1fr 2fr
+  grid-gap: 8px
+
+  label
+    font-weight: bold
+
+  label, .answer
+    padding-bottom: 3px
+    border-bottom: 1px solid darken(#efede8, 10%)
+
+
+h1
+  font-weight: normal
+  margin-top: 0
+
+h2
+  font-size: 20px
+
+table
+  width: 100%
+  border-collapse: separate
+  border-spacing: 0
+  background-color: #efede8
+  margin-bottom: 20px
+  border-radius: 7px
+
+  th
+    text-align: left
+
+  th, td
+    padding: 5px 10px 5px 10px
+    border: none
+    border-top: 1px solid white
+    border-bottom: 1px solid #CCC7BE
+    border-right: 1px dotted #CCC7BE
+    vertical-align: top
+
+    tr:first-child &
+      border-top: none
+
+    tr:last-child &
+      border-bottom: none
+
+    &:last-child
+      border-right: none
+
+  .actions
+    a
+      img
+        width: 20px
+        height: 20px
+        margin-right: 4px
+        vertical-align: middle
+
+.field
+  border: none
+  border-top: 1px solid white
+  border-bottom: 1px solid #CCC7BE
+  height: 100%
+  overflow: auto
+  margin: 0
+  padding: 5px
+  margin-left: -10px
+  margin-right: -10px
+  padding-left: 10px
+  padding-right: 10px
+  border-image: initial
+
+  &:last-child
+    border-bottom: none
+
+  &:first-of-type
+    border-top: none
+
+
+a
+  color: #1471c8
+  text-decoration: none
+
+  &:hover
+    text-decoration: underline
+
+.preamble
+  width: 80%
+
+.plug
+  float: right
+  font-size: 12px
+  margin-top: 20px
+
+  a
+    font-weight: bold
+    background-image: url(/img/brik_logo.png)
+    background-repeat: no-repeat
+    padding-left: 20px
+    background-position: left center
+    margin-left: 5px
+    padding-top: 2px
+    padding-bottom: 2px
+
+.arrow
+  font-weight: bold
+  background-image: url(/img/ra_gold.png)
+  background-repeat: no-repeat
+  background-position: left center
+  padding: 0 0 0 20px
+
+.logo
+  display: block
+  margin: 30px auto 0 auto
+
+.popup
+  z-index: 10
+  position: fixed
+  left: 0
+  right: 0
+  top: 0
+  bottom: 0
+
+  .box
+    padding: 20px
+    background-color: #efede8
+    top: 50%
+    left: 50%
+    width: 500px
+    margin-left: -250px
+    margin-top: -135px
+    position: absolute
+    border-radius: 5px
+
+  .x
+    margin-top: -12px
+    margin-right: -10px
+    float: right
+
+  .shim
+    position: fixed
+    left: 0
+    right: 0
+    top: 0
+    bottom: 0
+    background-color: #ccc
+    opacity: 0.6
+
+.borderless
+  border: 0
+
+.container
+  clear: both
+  padding-top: 30px
+  width: 80vw
+  margin: 0 auto

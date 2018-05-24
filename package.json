@@ -1,0 +1,27 @@
+{
+  "name": "number-scaler",
+  "version": "1.0.0",
+  "main": "server.js",
+  "author": "Jon Packer <jon.packer@brik.no>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babelify": "^8.0.0",
+    "browserify-middleware": "^8.1.0",
+    "koa": "^2.5.0",
+    "koa-logger": "^3.2.0",
+    "koa-pug": "^3.0.0-2",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.2",
+    "nib": "^1.1.2",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "stylus": "^0.54.5",
+    "underscore": "^1.9.0"
+  }
+}
