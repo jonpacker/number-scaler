@@ -16,8 +16,7 @@ const pug = new Pug({
   debug: IS_DEV,
   noCache: IS_DEV,
   locals: {
-    siteTitle: "Number Scaler",
-    moment
+    siteTitle: "Number Scaler"
   }
 });
 
