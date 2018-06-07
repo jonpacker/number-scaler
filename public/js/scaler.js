@@ -11,26 +11,30 @@ class Scaler extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      numbers: [],
-      scaleKey: 0,
+      dry: [],
+      wet: [],
+      scaleBase: 0,
       scaleValue: '',
+      scaleValueText: '',
       recipeName: '',
       saved: JSON.parse(localStorage.getItem("numberscaler_saved") || "[]")
     };
   }
 
-  updateLine(index, line) {
+  updateLine(dry, index, line) {
+    const key = dry ? 'dry' : 'wet';
     this.setState( {
-      numbers: this.state.numbers.map((numberLine, i) => {
+      [key]: this.state[key].map((numberLine, i) => {
         if (index == i) return line;
         return numberLine;
       })
     })
   }
 
-  addLine() {
+  addLine(dry) {
+    const key = dry ? 'dry' : 'wet';
     this.setState({
-      numbers: [...this.state.numbers, {ingredient: '', amount: '', unit: 'kg'}]
+      [key]: [...this.state[key], {ingredient: '', amount: '', unit: dry ? 'kg' : 'L', amountNumber: 0}]
     });
   }
 
@@ -46,25 +50,67 @@ class Scaler extends React.Component {
     this.setState(saved);
   }
 
+  removeLine(dry, index) {
+    const key = dry ? 'dry' : 'wet';
+    this.setState({
+      [key]: this.state[key].filter((numberLine, i) => {
+        return i != index;
+      })
+    })
+  }
+
+  setScaleValue(value) {
+    let number = parseFloat(value);
+    this.setState({scaleValue:number, scaleValueText:value});
+  }
+
+  setScaleBase(value) {
+    this.setState({scaleBase:value});
+  }
+
   render() {
+    const allIngredients = this.state.wet.concat(this.state.dry);
+    const wetTotal = this.state.wet.reduce((sum, line) => {
+      let amt = isNaN(line.amountNumber) ? 0 : line.amountNumber;
+      if (line.unit == 'g' || line.unit == 'ml') amt = amt / 1000;
+      return sum + amt;
+    }, 0);
     return <div className="scaler">
-      { this.state.numbers.map((line, i) => {
-          return <IngredientLine {...line} key={i} onChange={updatedLine => this.updateLine(i, updatedLine)} />
-      })}
-      <button onClick={() => this.addLine()}>Add Ingredient</button>
+      <div className="wet">
+        <h3>Wet Ingredients</h3>
+        { this.state.wet.map((line, i) => {
+            return <div key={i} >
+              <IngredientLine {...line} defaultUnit="L" onChange={updatedLine => this.updateLine(false, i, updatedLine)} />
+              <button onClick={e => this.removeLine(false, i)}>Remove</button>
+            </div>
+        })}
+        <button onClick={() => this.addLine(false)}>Add Ingredient</button>
+      </div>
+      <div className="dry">
+        <h3>Dry Ingredients</h3>
+        { this.state.dry.map((line, i) => {
+            return <div key={i} >
+              <IngredientLine {...line} defaultUnit="kg" onChange={updatedLine => this.updateLine(true, i, updatedLine)} />
+              <button onClick={e => this.removeLine(true, i)}>Remove</button>
+            </div>
+        })}
+        <button onClick={() => this.addLine(true)}>Add Ingredient</button>
+      </div>
       <hr/>
-      { this.state.numbers.length > 0 && this.state.numbers[0].amount != '' &&
+      { allIngredients.length > 0 && allIngredients[0].amount != '' &&
         <div className="scale-results">
           <label htmlFor="ingredient-key">Scale</label>
-          <select id="ingredient-key" value={this.state.scaleKey} onChange={e => this.setState({scaleKey: e.target.value})}>
-            { this.state.numbers.map((line, i) => {
+          <select id="ingredient-key" value={this.state.scaleBase} onChange={e => this.setScaleBase(e.target.value)}>
+            { allIngredients.map((line, i) => {
                 return <option key={i} value={i}>{line.amount}{line.unit} {line.ingredient}</option>;
             })}
+            <option value="-1" data-is-total="true">Total Wet Volume ({wetTotal}L)</option>
           </select>
-          to <input type="text" value={this.state.scaleValue} onChange={e => this.setState({scaleValue: parseFloat(e.target.value)})}/>
+          to <input type="text" value={this.state.scaleValueText} onChange={e => this.setScaleValue(e.target.value)}/>
           { !!this.state.scaleValue &&
-            this.state.numbers.map((line, i) => {
-              const scaled = line.amount * (this.state.scaleValue / this.state.numbers[this.state.scaleKey].amount);
+            allIngredients.map((line, i) => {
+              const mult = this.state.scaleValue / (this.state.scaleBase == -1 ? wetTotal : allIngredients[this.state.scaleBase].amountNumber)
+              const scaled = line.amountNumber * mult;
               return <div key={i} className="scaledIngredientLine">
                 <strong>{scaled.toFixed(1)}{line.unit}</strong> {line.ingredient}
               </div>
@@ -92,7 +138,8 @@ class IngredientLine extends React.Component {
     this.state = {
       ingredient: props.ingredient,
       amount: props.amount,
-      unit: props.unit
+      unit: props.unit || props.defaultUnit,
+      amountNumber: props.amountNumber
     };
   }
 
@@ -100,6 +147,7 @@ class IngredientLine extends React.Component {
     this.setState({
       ingredient: props.ingredient,
       amount: props.amount,
+      amountNumber: props.amountNumber,
       unit: props.unit
     });
   }
@@ -110,21 +158,25 @@ class IngredientLine extends React.Component {
   }
 
   setAmount(val) {
-    try {
-      val = parseFloat(val);
-    } catch (e) {}
-    this.set('amount', val);
+    const update = {
+      amount: val,
+      amountNumber: parseFloat(val)
+    };
+    this.setState(update);
+    this.props.onChange({ ...this.state, ...update });
   }
 
   render() {
-    return <div className="ingredient-line">
+    return <span className="ingredient-line">
       <input type="text" placeholder="0" value={this.state.amount} onChange={e => this.setAmount(e.target.value)} />
       <select onChange={e => this.set('unit', e.target.value)} value={this.state.unit}>
         <option value="kg">kg</option>
+        <option value="g">g</option>
+        <option value="ml">ml</option>
         <option value="L">L</option>
       </select>
       <input type="text" placeholder="ingredient" value={this.state.ingredient} onChange={e => this.set('ingredient', e.target.value)} />
-    </div>;
+    </span>;
   }
 }
 
